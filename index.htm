@@ -1,0 +1,132 @@
+<html lang="zh-CN">
+<head>
+  <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="black" name="apple-mobile-web-app-status-bar-style">
+  <meta content="320" name="MobileOptimized">
+  <title></title>
+<style>
+/* 容器保持居中不变 */
+.container {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: rotate-move 2s ease-in-out infinite;
+}
+
+/* 树叶基础样式 - 紫粉色系，模拟树叶形态 */
+.leaf {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 25px;
+    height: 20px;
+    border-radius: 70% 0 50% 0; /* 树叶轮廓 */
+    animation: leaf-move 2s ease infinite;
+}
+
+/* 三张树叶的紫粉色系配色 */
+.leaf-1 {
+    background-color: #f0abfc; /* 浅紫粉 */
+}
+.leaf-2 {
+    background-color: #a855f7; /* 中紫粉 */
+}
+.leaf-3 {
+    background-color: #d946ef; /* 深紫粉 */
+}
+
+/* 三张树叶的转动动画 - 不同轨迹+缩放，模拟自然转动 */
+.leaf-1 {
+    animation: leaf1-move 2s ease infinite;
+}
+@keyframes leaf1-move {
+    20% { transform: scale(1) rotate(0deg); }
+    45% { transform: translate(20px, 10px) scale(.6) rotate(120deg); } /* 右下转动 */
+    60% { transform: translate(25px, 15px) scale(.6) rotate(120deg); }
+    80% { transform: translate(25px, 15px) scale(.6) rotate(120deg); }
+    100% { transform: translate(0, 0) scale(1) rotate(0deg); } /* 回归原位 */
+}
+
+.leaf-2 {
+    animation: leaf2-move 2s ease infinite;
+}
+@keyframes leaf2-move {
+    20% { transform: scale(1) rotate(0deg); }
+    45% { transform: translate(-20px, 10px) scale(.6) rotate(-120deg); } /* 左下转动 */
+    60% { transform: translate(-25px, 15px) scale(.6) rotate(-120deg); }
+    80% { transform: translate(-25px, 15px) scale(.6) rotate(-120deg); }
+    100% { transform: translate(0, 0) scale(1) rotate(0deg); } /* 回归原位 */
+}
+
+.leaf-3 {
+    animation: leaf3-move 2s ease infinite;
+}
+@keyframes leaf3-move {
+    20% { transform: scale(1) rotate(0deg); }
+    45% { transform: translate(0, -20px) scale(.6) rotate(0deg); } /* 向上转动 */
+    60% { transform: translate(0, -25px) scale(.6) rotate(0deg); }
+    80% { transform: translate(0, -25px) scale(.6) rotate(0deg); }
+    100% { transform: translate(0, 0) scale(1) rotate(0deg); } /* 回归原位 */
+}
+
+/* 容器旋转动画 - 适配树叶整体转动效果 */
+@keyframes rotate-move {
+    55% { transform: translate(-50%, -50%) rotate(0deg); }
+    80% { transform: translate(-50%, -50%) rotate(360deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* iframe容器样式保持不变 */
+.content{height:100%;width:100%;position: fixed;left: -2px;top: -2px;}
+</style>
+<body>
+
+<div class="container">
+    <div class="leaf leaf-1"></div>
+    <div class="leaf leaf-2"></div>
+    <div class="leaf leaf-3"></div>
+</div>
+
+<script>
+var urlParams = new URLSearchParams(window.location.search);
+var encodedParam = urlParams.get('c');
+var tureurl = atob(encodedParam);
+if (tureurl.includes("http")) {
+var square = document.getElementById("container");
+setTimeout(function() {
+  square.style.display = "none";
+}, 1500);
+ var html='<iframe class="content" onload="bindMouseWhee(this)" src='+tureurl+'></iframe>';
+  document.writeln(html);
+console.log(tureurl);
+} else {
+  console.log("nourls");
+}
+</script>
+
+<script>
+var firefox = navigator.userAgent.indexOf('Firefox') != -1;
+function MouseWheel(e,doc){
+	e.preventDefault && e.preventDefault(),e.returnValue = false;
+	var up = firefox && e.detail < 0 || e.wheelDelta > 0;
+	doc.body.scrollTop = doc.documentElement.scrollTop += up?-50:50;
+}
+function bindMouseWhee(ifr){
+	try{
+		var doc = ifr.contentWindow.document;
+		firefox?doc.addEventListener('DOMMouseScroll',function(e){MouseWheel(e,doc)},false):(doc.onmousewheel = function(e){MouseWheel(e||ifr.contentWindow.event,doc)});
+	}catch(e){
+		alert('跨域无法获取iframe加载document'+e);
+	}
+}
+</script>
+</body>
+</html>
